@@ -18,45 +18,71 @@ const Part = (props) => {
 const Content = (props) => {
   return (
     <div>
-      <Part text={props.parts[0].name} count={props.parts[0].exercises} />
-      <Part text={props.parts[1].name} count={props.parts[1].exercises} />
-      <Part text={props.parts[2].name} count={props.parts[2].exercises} />
+      {props.parts.map(part => <Part key={part.id} text={part.name} count={part.exercises} />)}
     </div>
   )
 }
 
 const Total = (props) => {
+  const exerciseArr = props.parts.map(part => part.exercises)
   return (
     <div>
-      <p>Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}</p>
+      <p>total of {exerciseArr.reduce((total, item) => total + item)} exercises</p>
+    </div>
+  )
+}
+
+const Course = (props) => {
+  return (
+    <div>
+      <Header text={props.course.name} />
+      <Content parts={props.course.parts} />
+      <Total parts={props.course.parts} />
     </div>
   )
 }
 
 const App = () => {
-  const course = 'Half Stack application development'
-  const parts = [
-  {
-    name: 'Fundamentals of React',
-    exercises: 10
+  const courses = [
+    {
+    id: 1,
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10,
+        id: 1
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
+      },
+      {
+        name: 'State of a component',
+        exercises: 14,
+        id: 3
+      }
+    ]
   },
   {
-    name: 'using props to pass data',
-    exercises: 7
-  },
-  {
-    name: 'State of a component',
-    exercises: 14
+    name: 'Node.js',
+    id: 2,
+    parts: [
+      {
+        name: 'Routing',
+        exercises: 3,
+        id: 1
+      },
+      {
+        name: 'Middlewares',
+        exercises: 7,
+        id: 2
+      }
+    ]
   }
 ]
-
-  return (
-    <div>
-      <Header text={course} />
-      <Content parts={parts} />
-      <Total parts={parts} />
-    </div>
-  )
+  return <Course course={course} />
 }
 
 
