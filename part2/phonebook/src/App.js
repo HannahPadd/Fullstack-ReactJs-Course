@@ -1,20 +1,13 @@
-import { useState } from 'react';
+import { useState } from 'react'
+import Body from './components/Body'
 
-const Body = (props) => {
-  return (
-    <div>
-    <li>{props.text}</li>
-    </div>
-  )
-}
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' },
+    { name: 'Arto Hellas',
+     number: '040-1234567' },
   ])
-  const [numbers, setNumbers] = useState([
-    { number: '040-1234567' },
-  ])
+  console.log(persons)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
@@ -26,28 +19,18 @@ const App = () => {
     }
     const personObject = {
       name: newName,
+      number: newNumber,
     }
     console.log('personobject',personObject)
     setPersons(persons.concat(personObject))
     setNewName('')
+    setNewNumber('')
   }
 
   const handlePersonChange = (event) => {
+    console.log(event)
     console.log(event.target.value)
     setNewName(event.target.value)
-  }
-
-  const addNumber = (event) => {
-    event.preventDefault()
-    if (numbers.some(number => number.number === newNumber)) {
-      alert(`${newNumber} is already added to phonebook`)
-      return
-    }
-    const numberObject = {
-      number: newNumber,
-    }
-    setNumbers(numbers.concat(numberObject))
-    setNewNumber('')
   }
 
   const handleNumberChange = (event) => {
@@ -55,11 +38,13 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+
   const addStuff = (event) => {
     event.preventDefault()
+    console.log('event', event)
     addPerson(event)
-    addNumber(event)
   }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -78,13 +63,10 @@ const App = () => {
             <div><button type="submit">add</button></div>
           </form>
         </div>
-        <div>
-          debug: {newName}
-        </div>
       <h2>Numbers</h2>
-      {`${persons.map(person => <Body key={person.name} text={person.name} />)} ${numbers.map(number => <Body key={number.number} text={number.number} />)}`}
+      {persons.map(person => <Body key={person.name} text={person.name} number={person.number} />)}
     </div>
   )
-}
+}  
 
 export default App;
