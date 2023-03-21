@@ -1,12 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Body from './components/Body'
-
+import axios from 'axios';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas',
-     number: '040-1234567' },
-  ])
+  const [persons, setPersons] = useState([])
   console.log(persons)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -44,6 +41,14 @@ const App = () => {
     console.log('event', event)
     addPerson(event)
   }
+
+  const hook = () => {
+      axios.get('http://localhost:3001/persons').then(response => {
+      setPersons(response.data)
+    })
+  }
+
+  useEffect(hook, [])
 
   return (
     <div>
