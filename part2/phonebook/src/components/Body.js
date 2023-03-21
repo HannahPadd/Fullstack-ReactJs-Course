@@ -1,8 +1,11 @@
-const Body = (props) => {
+const Body = ({ text, number, deletePerson}) => {
 
-    var display = props.text + ' ' + props.number
+    var display = text + ' ' + number
     return (
-      <li>{display}</li>
+      <li>
+        {display}
+        <button onClick={deletePerson}>{'delete'}</button>
+        </li>
     )
   }
 

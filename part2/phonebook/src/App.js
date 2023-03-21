@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
-import Body from './components/Body'
+import { useState, useEffect } from 'react';
+import Body from './components/Body';
 import axios from 'axios';
+import personService from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  console.log(persons)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
@@ -17,44 +17,46 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
+      id: persons.length + 1,
     }
-    console.log('personobject',personObject)
-    setPersons(persons.concat(personObject))
-    setNewName('')
-    setNewNumber('')
+    personService.addPerson(personObject).then(returnedPerson => {
+      setPersons(persons.concat(returnedPerson))
+      setNewName('')
+      setNewNumber('')
+    })
   }
 
   const handlePersonChange = (event) => {
-    console.log(event)
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value)
     setNewNumber(event.target.value)
   }
 
 
-  const addStuff = (event) => {
-    event.preventDefault()
-    console.log('event', event)
-    addPerson(event)
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personService.deletePerson(id).then(returnedPerson => {
+        setPersons(persons.filter(person => person.id !== id))
+      }).catch(error => {
+        alert(`the person '${persons.name}' was already deleted from server`)
+      })
+    }
   }
 
-  const hook = () => {
-      axios.get('http://localhost:3001/persons').then(response => {
-      setPersons(response.data)
+  useEffect(() => {
+    personService.getAll().then(initialPersons => {
+      setPersons(initialPersons)
     })
-  }
+  }, [])
 
-  useEffect(hook, [])
 
   return (
     <div>
       <h2>Phonebook</h2>
         <div>
-          <form onSubmit={addStuff}> 
+          <form onSubmit={addPerson}> 
             <div>name: 
               <input 
                 value={newName} 
@@ -69,7 +71,13 @@ const App = () => {
           </form>
         </div>
       <h2>Numbers</h2>
-      {persons.map(person => <Body key={person.name} text={person.name} number={person.number} />)}
+      {persons.map(person => 
+      <Body 
+        key={person.name}
+        text={person.name}
+        number={person.number}
+        deletePerson={() => deletePerson(person.id, person.name)}
+        />)}
     </div>
   )
 }  
